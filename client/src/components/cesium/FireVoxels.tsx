@@ -15,7 +15,7 @@ export default function FireVoxels({ viewer, fireData }: FireVoxelsProps) {
   const entitiesRef = useRef<Cesium.Entity[]>([]);
 
   useEffect(() => {
-    if (!viewer || !fireData?.features) return;
+    if (!viewer || !viewer.entities || !fireData?.features) return;
 
     // Clear existing fire entities
     entitiesRef.current.forEach((entity) => {
@@ -55,9 +55,11 @@ export default function FireVoxels({ viewer, fireData }: FireVoxelsProps) {
 
     // Cleanup
     return () => {
-      entitiesRef.current.forEach((entity) => {
-        viewer.entities.remove(entity);
-      });
+      if (viewer && viewer.entities) {
+        entitiesRef.current.forEach((entity) => {
+          viewer.entities.remove(entity);
+        });
+      }
       entitiesRef.current = [];
     };
   }, [viewer, fireData]);

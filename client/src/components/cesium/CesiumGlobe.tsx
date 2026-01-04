@@ -9,9 +9,10 @@ import * as Cesium from "cesium";
 interface CesiumGlobeProps {
   cesiumToken: string;
   onViewerReady?: (viewer: Cesium.Viewer) => void;
+  onError?: () => void;
 }
 
-export default function CesiumGlobe({ cesiumToken, onViewerReady }: CesiumGlobeProps) {
+export default function CesiumGlobe({ cesiumToken, onViewerReady, onError }: CesiumGlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Cesium.Viewer | null>(null);
 
@@ -111,6 +112,9 @@ export default function CesiumGlobe({ cesiumToken, onViewerReady }: CesiumGlobeP
 
     } catch (error) {
       console.error("[CesiumGlobe] Initialization error:", error);
+      if (onError) {
+        onError();
+      }
     }
 
     // Cleanup

@@ -28,7 +28,7 @@ export default function AssetBillboards({ viewer, telemetryData }: AssetBillboar
   const entitiesRef = useRef<Map<string, { billboard: Cesium.Entity; laser: Cesium.Entity }>>(new Map());
 
   useEffect(() => {
-    if (!viewer || telemetryData.length === 0) return;
+    if (!viewer || !viewer.entities || telemetryData.length === 0) return;
 
     telemetryData.forEach((data) => {
       const existing = entitiesRef.current.get(data.entityId);
@@ -88,10 +88,12 @@ export default function AssetBillboards({ viewer, telemetryData }: AssetBillboar
 
     // Cleanup
     return () => {
-      entitiesRef.current.forEach(({ billboard, laser }) => {
-        viewer.entities.remove(billboard);
-        viewer.entities.remove(laser);
-      });
+      if (viewer && viewer.entities) {
+        entitiesRef.current.forEach(({ billboard, laser }) => {
+          viewer.entities.remove(billboard);
+          viewer.entities.remove(laser);
+        });
+      }
       entitiesRef.current.clear();
     };
   }, [viewer, telemetryData]);

@@ -69,3 +69,8 @@
 - [x] Configure cinematic camera with quintic easing
 - [x] Enable inertia spin for physical weight feel
 - [x] Set default 45-degree bird's eye view angle
+
+## Bug Fixes
+- [x] Fix viewer.entities undefined error in AssetBillboards and FireVoxels
+- [x] Ensure viewer is fully initialized before passing to child components
+- [x] Implement Leaflet fallback when CesiumJS/WebGL unavailable
