@@ -2,11 +2,13 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import { Server as SocketIOServer } from "socket.io";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { SimulationEngine } from "../simulationEngine";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -30,6 +32,33 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  
+  // Initialize Socket.IO
+  const io = new SocketIOServer(server, {
+    cors: {
+      origin: process.env.NODE_ENV === "development" ? "*" : false,
+      methods: ["GET", "POST"],
+    },
+  });
+  
+  // Initialize and start simulation engine
+  const simulationEngine = new SimulationEngine(io);
+  
+  io.on("connection", (socket) => {
+    console.log("[WebSocket] Client connected:", socket.id);
+    
+    // Send current state immediately on connection
+    socket.emit("telemetry", simulationEngine.getCurrentState());
+    
+    socket.on("disconnect", () => {
+      console.log("[WebSocket] Client disconnected:", socket.id);
+    });
+  });
+  
+  // Start simulation after server is ready
+  setTimeout(() => {
+    simulationEngine.start();
+  }, 1000);
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
@@ -59,6 +88,17 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    console.log(`[WebSocket] Socket.IO server ready`);
+  });
+  
+  // Graceful shutdown
+  process.on("SIGTERM", () => {
+    console.log("[Server] SIGTERM received, shutting down gracefully");
+    simulationEngine.stop();
+    server.close(() => {
+      console.log("[Server] Server closed");
+      process.exit(0);
+    });
   });
 }
 

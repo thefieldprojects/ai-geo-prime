@@ -2,9 +2,11 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, router } from "./_core/trpc";
+import { getFireGeoJSON } from "./mockFireData";
+import { invokeLLM } from "./_core/llm";
+import { z } from "zod";
 
 export const appRouter = router({
-    // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
@@ -17,12 +19,45 @@ export const appRouter = router({
     }),
   }),
 
-  // TODO: add feature routers here, e.g.
-  // todo: router({
-  //   list: protectedProcedure.query(({ ctx }) =>
-  //     db.getUserTodos(ctx.user.id)
-  //   ),
-  // }),
+  // Fire data endpoint
+  fire: router({
+    getData: publicProcedure.query(() => {
+      return getFireGeoJSON();
+    }),
+  }),
+
+  // AI command endpoint
+  ai: router({
+    command: publicProcedure
+      .input(z.object({ message: z.string() }))
+      .mutation(async ({ input }) => {
+        try {
+          const response = await invokeLLM({
+            messages: [
+              {
+                role: "system",
+                content:
+                  "You are an AI Incident Commander for a wildfire disaster response system. " +
+                  "You have access to real-time data from the Camp Fire in Paradise, California. " +
+                  "Analyze fire data, asset positions, and telemetry to provide tactical recommendations. " +
+                  "Keep responses concise, professional, and actionable. Use military-style brevity.",
+              },
+              {
+                role: "user",
+                content: input.message,
+              },
+            ],
+          });
+
+          return {
+            response: response.choices[0]?.message?.content || "No response generated.",
+          };
+        } catch (error) {
+          console.error("[AI Command] Error:", error);
+          throw new Error("Failed to process AI command");
+        }
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

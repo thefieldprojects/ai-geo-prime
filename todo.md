@@ -1,0 +1,47 @@
+# AI-GEO Prime - Project TODO
+
+## Core Infrastructure
+- [x] Install CesiumJS, Resium, Socket.IO dependencies
+- [x] Configure dark mode Tailwind CSS with glassmorphism utilities
+- [x] Set up WebSocket server with Express integration
+- [ ] Create database schema for assets and hazards
+
+## Data Layer
+- [x] Source NASA FIRMS fire data (Camp Fire scenario)
+- [x] Generate mock robot movement paths near Paradise, California
+- [x] Create simulation engine for asset position updates
+- [x] Implement temperature fluctuation logic based on fire proximity
+
+## 3D Globe Visualization
+- [x] Initialize CesiumJS viewer with dark night skybox
+- [x] Configure atmospheric effects and requestRenderMode
+- [x] Render NASA FIRMS fire data as red voxels/entities
+- [x] Load 3D GLTF models for scout robots and drones
+- [x] Implement real-time asset position updates via WebSocket
+
+## WebSocket Real-time System
+- [x] Create WebSocket server endpoint at /telemetry
+- [x] Implement 500ms broadcast interval with 50ms latency simulation
+- [x] Send position, temperature, battery, and speed telemetry
+- [x] Handle client connections and disconnections
+
+## Glassmorphism HUD Interface
+- [x] Design top bar with mission timer, active units, risk level
+- [x] Create bottom time slider for past/present/prediction
+- [x] Build right panel for live feed and asset telemetry
+- [x] Build left panel for AI command chat interface
+- [x] Apply glassmorphism styling (backdrop-blur, transparency)
+
+## AI Command Integration
+- [x] Create tRPC endpoint for AI command processing
+- [x] Integrate OpenAI GPT-4o with incident commander prompt
+- [x] Parse AI responses for camera flyTo coordinates
+- [x] Display AI responses in chat interface
+
+## Testing & Polish
+- [x] Test WebSocket connection stability
+- [x] Verify temperature increases near fire zones
+- [x] Test AI command chat functionality
+- [x] Ensure 3D globe performance with requestRenderMode
+- [x] Create comprehensive vitest tests
+- [ ] Create project checkpoint
