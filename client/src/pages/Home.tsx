@@ -1,12 +1,15 @@
 /**
  * Home Page - AI-GEO Prime Command Center
- * Real-time telemetry dashboard with WebSocket updates
+ * SpaceX-grade 3D visualization with CesiumJS
  */
 
 import { useState, useEffect } from "react";
+import * as Cesium from "cesium";
 import { io, Socket } from "socket.io-client";
 import { trpc } from "@/lib/trpc";
-import MapView from "@/components/MapView";
+import CesiumGlobe from "@/components/cesium/CesiumGlobe";
+import FireVoxels from "@/components/cesium/FireVoxels";
+import AssetBillboards from "@/components/cesium/AssetBillboards";
 import StatusBar from "@/components/hud/StatusBar";
 import TelemetryPanel from "@/components/hud/TelemetryPanel";
 import AICommandPanel from "@/components/hud/AICommandPanel";
@@ -24,7 +27,10 @@ interface TelemetryUpdate {
   timestamp: number;
 }
 
+const CESIUM_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIwZGQ2NDZkNi0zZGU1LTRkYTgtYWI2Zi0zZmJmNDRiZTUzY2YiLCJpZCI6Mzc0ODM2LCJpYXQiOjE3Njc1MzQ4MTd9.wkfKuIFwoWM3RZTRKPTz4w2fyDQETd7djzQyCRREVMg";
+
 export default function Home() {
+  const [viewer, setViewer] = useState<Cesium.Viewer | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [telemetryData, setTelemetryData] = useState<TelemetryUpdate[]>([]);
   
@@ -83,8 +89,17 @@ export default function Home() {
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-[#020617] font-ui">
-      {/* Leaflet Map */}
-      <MapView fireData={fireData} telemetryData={telemetryData} />
+      {/* CesiumJS 3D Globe */}
+      <CesiumGlobe
+        cesiumToken={CESIUM_TOKEN}
+        onViewerReady={(v) => setViewer(v)}
+      />
+      
+      {/* Fire Voxels Layer */}
+      <FireVoxels viewer={viewer} fireData={fireData} />
+      
+      {/* Asset Billboards Layer */}
+      <AssetBillboards viewer={viewer} telemetryData={telemetryData} />
       
       {/* Title overlay */}
       <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-10 pointer-events-none">
