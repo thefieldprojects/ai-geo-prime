@@ -45,3 +45,12 @@
 - [x] Ensure 3D globe performance with requestRenderMode
 - [x] Create comprehensive vitest tests
 - [ ] Create project checkpoint
+
+## Map Visualization (New Request)
+- [x] Fix Leaflet map initialization issues
+- [x] Integrate map into center of interface
+- [x] Display fire hotspots as red markers on map
+- [x] Display scout robots and drones with custom icons
+- [x] Update asset positions in real-time on map
+- [x] Add map controls (zoom, pan)
+- [x] Test map rendering and performance
