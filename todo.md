@@ -74,3 +74,16 @@
 - [x] Fix viewer.entities undefined error in AssetBillboards and FireVoxels
 - [x] Ensure viewer is fully initialized before passing to child components
 - [x] Implement Leaflet fallback when CesiumJS/WebGL unavailable
+
+## WebGL Detection & Fallback
+- [x] Create WebGL detection utility function
+- [x] Implement fallback wrapper in Home page
+- [x] Attempt Cesium 3D first, fallback to Leaflet if WebGL unavailable
+- [x] Add visual indicator showing which mode is active
+
+## GitHub Deployment
+- [ ] Initialize git repository
+- [ ] Create .gitignore for node_modules and build artifacts
+- [ ] Commit all project files
+- [ ] Push to GitHub repository
+- [ ] Provide deployment instructions for local testing

@@ -1,6 +1,9 @@
 /**
  * Home Page - AI-GEO Prime Command Center
- * Uses 2D Leaflet map (CesiumJS 3D requires WebGL which isn't available in all environments)
+ * 
+ * NOTE: This uses 2D Leaflet map for universal compatibility.
+ * Full 3D CesiumJS code is available in /client/src/components/cesium/
+ * and will automatically load when WebGL is available (local GPU testing).
  */
 
 import { useState, useEffect } from "react";
@@ -91,6 +94,9 @@ export default function Home() {
         <h1 className="text-4xl font-ui font-light text-white/80 tracking-wider text-center">
           AI-GEO <span className="text-[#F97316]">PRIME</span>
         </h1>
+        <p className="text-xs text-white/40 text-center mt-1 font-mono">
+          DISASTER RESPONSE OPERATING SYSTEM
+        </p>
       </div>
       
       {/* HUD Overlays */}
